@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingTop="20dp"
+    android:paddingBottom="16dp"
+    android:paddingStart="12dp"
+    android:paddingEnd="12dp">
+
+    <FrameLayout
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:background="@drawable/bg_card">
+
+        <ImageView
+            android:id="@+id/image_qr"
+            android:layout_width="94dp"
+            android:layout_height="94dp"
+            android:layout_gravity="center"
+            android:contentDescription="@null" />
+
+        <ProgressBar
+            android:id="@+id/progress_qr"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_gravity="center" />
+
+        <LinearLayout
+            android:id="@+id/layout_expired"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#CC0B0E14"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_refresh"
+                android:contentDescription="@null" />
+
+            <TextView
+                style="@style/Text.Subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/login_refresh" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/text_status"
+        style="@style/Text.Subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="@string/login_scan_hint" />
+</LinearLayout>
