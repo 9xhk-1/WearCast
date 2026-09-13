@@ -44,8 +44,11 @@ jobs:
             KEY_PASSWORD="$SIGNING_KEY_PASSWORD"
           else
             echo "No signing secrets configured, generating a random one-off keystore for this build."
+            # PKCS12 (the default keystore type on JDK 9+) requires the key password to match
+            # the store password, otherwise the private key cannot be decrypted later
+            # (fails with "Given final block not properly padded"). Use a single random password.
             STORE_PASSWORD=$(openssl rand -hex 16)
-            KEY_PASSWORD=$(openssl rand -hex 16)
+            KEY_PASSWORD="$STORE_PASSWORD"
             KEY_ALIAS="wearcast"
             keytool -genkeypair -v \
               -keystore "$KEYSTORE_PATH" \
