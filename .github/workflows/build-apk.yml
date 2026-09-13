@@ -1,0 +1,78 @@
+name: Build APK
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Prepare signing key
+        env:
+          SIGNING_KEY_BASE64: ${{ secrets.SIGNING_KEY_BASE64 }}
+          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+        run: |
+          KEYSTORE_PATH="${RUNNER_TEMP}/wearcast-release.jks"
+          if [ -n "$SIGNING_KEY_BASE64" ]; then
+            echo "Using signing keystore provided via repository secrets."
+            echo "$SIGNING_KEY_BASE64" | base64 -d > "$KEYSTORE_PATH"
+            STORE_PASSWORD="$SIGNING_STORE_PASSWORD"
+            KEY_ALIAS="$SIGNING_KEY_ALIAS"
+            KEY_PASSWORD="$SIGNING_KEY_PASSWORD"
+          else
+            echo "No signing secrets configured, generating a random one-off keystore for this build."
+            # PKCS12 (the default keystore type on JDK 9+) requires the key password to match
+            # the store password, otherwise the private key cannot be decrypted later
+            # (fails with "Given final block not properly padded"). Use a single random password.
+            STORE_PASSWORD=$(openssl rand -hex 16)
+            KEY_PASSWORD="$STORE_PASSWORD"
+            KEY_ALIAS="wearcast"
+            keytool -genkeypair -v \
+              -keystore "$KEYSTORE_PATH" \
+              -storepass "$STORE_PASSWORD" \
+              -keypass "$KEY_PASSWORD" \
+              -alias "$KEY_ALIAS" \
+              -keyalg RSA -keysize 2048 -validity 10000 \
+              -dname "CN=WearCast, OU=WearCast, O=WearCast, L=Unknown, ST=Unknown, C=US"
+          fi
+          echo "::add-mask::$STORE_PASSWORD"
+          echo "::add-mask::$KEY_PASSWORD"
+          {
+            echo "SIGN_STORE_FILE=$KEYSTORE_PATH"
+            echo "SIGN_STORE_PASSWORD=$STORE_PASSWORD"
+            echo "SIGN_KEY_ALIAS=$KEY_ALIAS"
+            echo "SIGN_KEY_PASSWORD=$KEY_PASSWORD"
+          } >> "$GITHUB_ENV"
+
+      - name: Build signed release APK
+        run: gradle assembleRelease --no-daemon
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: wearcast-release-apk
+          path: app/build/outputs/apk/release/*.apk
+          if-no-files-found: error

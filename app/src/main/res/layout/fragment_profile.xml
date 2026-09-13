@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingTop="22dp"
+        android:paddingBottom="20dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp">
+
+        <ImageView
+            android:id="@+id/image_avatar"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:background="@drawable/bg_thumb_placeholder"
+            android:padding="8dp"
+            android:src="@drawable/ic_avatar_placeholder"
+            android:contentDescription="@null" />
+
+        <TextView
+            android:id="@+id/text_name"
+            style="@style/Text.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/profile_not_logged_in" />
+
+        <TextView
+            android:id="@+id/text_level"
+            style="@style/Text.Subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp" />
+
+        <TextView
+            android:id="@+id/text_login_desc"
+            style="@style/Text.Subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="center"
+            android:text="@string/profile_login_desc" />
+
+        <Button
+            android:id="@+id/button_login"
+            style="@style/Button.Round"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:minWidth="0dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="@string/action_login" />
+
+        <Button
+            android:id="@+id/button_logout"
+            style="@style/Button.Round"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:minWidth="0dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="@string/action_logout"
+            android:visibility="gone" />
+    </LinearLayout>
+</ScrollView>
