@@ -18,7 +18,7 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
-    <style name="Text.Title">
+    <style name="Text.Title" parent="android:TextAppearance">
         <item name="android:textColor">@color/text_primary</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
@@ -26,19 +26,19 @@
         <item name="android:ellipsize">end</item>
     </style>
 
-    <style name="Text.Subtitle">
+    <style name="Text.Subtitle" parent="android:TextAppearance">
         <item name="android:textColor">@color/text_secondary</item>
         <item name="android:textSize">11sp</item>
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
     </style>
 
-    <style name="Text.Body">
+    <style name="Text.Body" parent="android:TextAppearance">
         <item name="android:textColor">@color/text_primary</item>
         <item name="android:textSize">12sp</item>
     </style>
 
-    <style name="Button.Round">
+    <style name="Button.Round" parent="android:Widget.Button">
         <item name="android:background">@drawable/bg_button_round</item>
         <item name="android:textColor">@color/text_primary</item>
         <item name="android:textSize">12sp</item>
