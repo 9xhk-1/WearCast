@@ -58,6 +58,19 @@ public class PersistentCookieJar implements CookieJar {
         return c == null ? null : c.value();
     }
 
+    /** Stores a cookie for the bilibili domain directly (used for device cookies obtained out of band). */
+    public synchronized void put(String name, String value) {
+        Cookie cookie = new Cookie.Builder()
+                .name(name)
+                .value(value)
+                .domain("bilibili.com")
+                .path("/")
+                .expiresAt(System.currentTimeMillis() + 31536000000L)
+                .build();
+        cookieStore.put(name, cookie);
+        prefs.edit().putString(name, value).apply();
+    }
+
     public synchronized boolean hasSession() {
         return cookieStore.containsKey("SESSDATA");
     }
