@@ -117,8 +117,9 @@ public class DlnaController {
     }
 
     private void sendAction(String controlUrl, String serviceType, String action, String argsXml, final Callback2<String> callback) {
+        final Callback2<String> cb = Callback2.main(callback);
         if (controlUrl == null) {
-            callback.onError("missing control url");
+            cb.onError("missing control url");
             return;
         }
         String soapBody = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
@@ -138,7 +139,7 @@ public class DlnaController {
         http.newCall(request).enqueue(new okhttp3.Callback() {
             @Override
             public void onFailure(okhttp3.Call call, IOException e) {
-                callback.onError(e.getMessage());
+                cb.onError(e.getMessage());
             }
 
             @Override
@@ -147,10 +148,10 @@ public class DlnaController {
                     String body = response.body() != null ? response.body().string() : "";
                     if (!response.isSuccessful()) {
                         Log.w(TAG, action + " failed: " + response.code() + " " + body);
-                        callback.onError("HTTP " + response.code());
+                        cb.onError("HTTP " + response.code());
                         return;
                     }
-                    callback.onSuccess(body);
+                    cb.onSuccess(body);
                 } finally {
                     response.close();
                 }

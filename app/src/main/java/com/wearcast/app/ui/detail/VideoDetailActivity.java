@@ -56,6 +56,7 @@ public class VideoDetailActivity extends AppCompatActivity {
         repository.getVideoDetail(bvid, new Callback2<VideoDetail>() {
             @Override
             public void onSuccess(VideoDetail detail) {
+                if (isFinishing() || isDestroyed()) return;
                 currentDetail = detail;
                 title.setText(detail.title);
                 if (detail.owner != null) {
@@ -75,6 +76,7 @@ public class VideoDetailActivity extends AppCompatActivity {
                 repository.getComments(detail.aid, 1, new Callback2<List<Comment>>() {
                     @Override
                     public void onSuccess(List<Comment> comments) {
+                        if (isFinishing() || isDestroyed()) return;
                         commentAdapter.setComments(comments);
                     }
 
@@ -87,6 +89,7 @@ public class VideoDetailActivity extends AppCompatActivity {
 
             @Override
             public void onError(String message) {
+                if (isFinishing() || isDestroyed()) return;
                 title.setText(R.string.net_error);
             }
         });

@@ -113,6 +113,7 @@ public class CastControlActivity extends AppCompatActivity {
         videoRepository.getPlayUrl(bvid, cid, quality, new Callback2<PlayUrlResult>() {
             @Override
             public void onSuccess(PlayUrlResult result) {
+                if (!isAlive()) return;
                 currentPlayUrl = result;
                 setupQualitySpinner(result);
                 startPlaybackOnDevice(result);
@@ -120,9 +121,14 @@ public class CastControlActivity extends AppCompatActivity {
 
             @Override
             public void onError(String message) {
+                if (!isAlive()) return;
                 Toast.makeText(CastControlActivity.this, R.string.net_error, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private boolean isAlive() {
+        return !isFinishing() && !isDestroyed();
     }
 
     private void setupQualitySpinner(PlayUrlResult result) {
@@ -155,12 +161,14 @@ public class CastControlActivity extends AppCompatActivity {
         controller.setUrlAndPlay(mediaUrl, title, new Callback2<Void>() {
             @Override
             public void onSuccess(Void result) {
+                if (!isAlive()) return;
                 isPlaying = true;
                 playPauseButton.setImageResource(R.drawable.ic_pause);
             }
 
             @Override
             public void onError(String message) {
+                if (!isAlive()) return;
                 Toast.makeText(CastControlActivity.this, R.string.net_error, Toast.LENGTH_SHORT).show();
             }
         });
@@ -170,6 +178,7 @@ public class CastControlActivity extends AppCompatActivity {
         Callback2<Void> callback = new Callback2<Void>() {
             @Override
             public void onSuccess(Void result) {
+                if (!isAlive()) return;
                 isPlaying = !isPlaying;
                 playPauseButton.setImageResource(isPlaying ? R.drawable.ic_pause : R.drawable.ic_play);
             }
