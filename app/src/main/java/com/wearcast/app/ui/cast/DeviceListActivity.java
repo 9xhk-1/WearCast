@@ -54,6 +54,7 @@ public class DeviceListActivity extends AppCompatActivity {
             @Override
             public void onDeviceFound(DlnaDevice device) {
                 mainHandler.post(() -> {
+                    if (isFinishing() || isDestroyed()) return;
                     adapter.addDevice(device);
                     searchingLayout.setVisibility(View.GONE);
                 });
@@ -62,6 +63,7 @@ public class DeviceListActivity extends AppCompatActivity {
             @Override
             public void onFinished() {
                 mainHandler.post(() -> {
+                    if (isFinishing() || isDestroyed()) return;
                     if (adapter.getItemCount() == 0) {
                         searchingLayout.setVisibility(View.VISIBLE);
                     }

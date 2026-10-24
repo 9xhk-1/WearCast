@@ -35,10 +35,21 @@ public class CastManager {
         try {
             WifiInfo info = wifiManager.getConnectionInfo();
             String bssid = info != null ? info.getBSSID() : null;
-            return bssid != null ? bssid : "default";
-        } catch (SecurityException e) {
-            return "default";
+            if (bssid != null && !"02:00:00:00:00:00".equals(bssid)) {
+                return bssid;
+            }
+            // BSSID is redacted without a location permission on Android 10+. The DHCP gateway
+            // still identifies the current LAN and needs no runtime permission.
+            android.net.DhcpInfo dhcp = wifiManager.getDhcpInfo();
+            if (dhcp != null && dhcp.gateway != 0) {
+                int g = dhcp.gateway;
+                return "gw-" + (g & 0xff) + "." + ((g >> 8) & 0xff) + "."
+                        + ((g >> 16) & 0xff) + "." + ((g >> 24) & 0xff);
+            }
+        } catch (Exception ignored) {
+            // fall through to the shared default bucket
         }
+        return "default";
     }
 
     public void rememberDevice(DlnaDevice device) {

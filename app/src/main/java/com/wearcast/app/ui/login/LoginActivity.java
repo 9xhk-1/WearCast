@@ -125,6 +125,21 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        handler.removeCallbacks(pollRunnable);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!stopped && qrcodeKey != null) {
+            handler.removeCallbacks(pollRunnable);
+            handler.postDelayed(pollRunnable, POLL_INTERVAL_MS);
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         stopped = true;

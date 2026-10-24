@@ -26,12 +26,13 @@ public class VideoRepository {
     private final BiliApiService service = ApiClient.get().service();
 
     public void search(String keyword, int page, final Callback2<List<VideoItem>> callback) {
+        final Callback2<List<VideoItem>> cb = Callback2.main(callback);
         service.search(keyword, "video", page).enqueue(new retrofit2.Callback<BiliRawResponse>() {
             @Override
             public void onResponse(Call<BiliRawResponse> call, Response<BiliRawResponse> response) {
                 BiliRawResponse body = response.body();
                 if (body == null || !body.isSuccess() || body.data == null) {
-                    callback.onError(body != null ? body.message : "empty response");
+                    cb.onError(body != null ? body.message : "empty response");
                     return;
                 }
                 List<VideoItem> items = new ArrayList<>();
@@ -51,23 +52,24 @@ public class VideoRepository {
                         items.add(item);
                     }
                 }
-                callback.onSuccess(items);
+                cb.onSuccess(items);
             }
 
             @Override
             public void onFailure(Call<BiliRawResponse> call, Throwable t) {
-                callback.onError(t.getMessage());
+                cb.onError(t.getMessage());
             }
         });
     }
 
     public void recommend(int freshIndex, final Callback2<List<VideoItem>> callback) {
+        final Callback2<List<VideoItem>> cb = Callback2.main(callback);
         service.getRecommend(12, freshIndex).enqueue(new retrofit2.Callback<BiliRawResponse>() {
             @Override
             public void onResponse(Call<BiliRawResponse> call, Response<BiliRawResponse> response) {
                 BiliRawResponse body = response.body();
                 if (body == null || !body.isSuccess() || body.data == null) {
-                    callback.onError(body != null ? body.message : "empty response");
+                    cb.onError(body != null ? body.message : "empty response");
                     return;
                 }
                 List<VideoItem> items = new ArrayList<>();
@@ -90,23 +92,24 @@ public class VideoRepository {
                         items.add(item);
                     }
                 }
-                callback.onSuccess(items);
+                cb.onSuccess(items);
             }
 
             @Override
             public void onFailure(Call<BiliRawResponse> call, Throwable t) {
-                callback.onError(t.getMessage());
+                cb.onError(t.getMessage());
             }
         });
     }
 
     public void getFavFolders(long mid, final Callback2<List<FavFolder>> callback) {
+        final Callback2<List<FavFolder>> cb = Callback2.main(callback);
         service.getFavFolders(mid).enqueue(new retrofit2.Callback<BiliRawResponse>() {
             @Override
             public void onResponse(Call<BiliRawResponse> call, Response<BiliRawResponse> response) {
                 BiliRawResponse body = response.body();
                 if (body == null || !body.isSuccess() || body.data == null) {
-                    callback.onError(body != null ? body.message : "empty response");
+                    cb.onError(body != null ? body.message : "empty response");
                     return;
                 }
                 List<FavFolder> folders = new ArrayList<>();
@@ -124,23 +127,24 @@ public class VideoRepository {
                         folders.add(f);
                     }
                 }
-                callback.onSuccess(folders);
+                cb.onSuccess(folders);
             }
 
             @Override
             public void onFailure(Call<BiliRawResponse> call, Throwable t) {
-                callback.onError(t.getMessage());
+                cb.onError(t.getMessage());
             }
         });
     }
 
     public void getFavResources(long mediaId, int page, final Callback2<List<VideoItem>> callback) {
+        final Callback2<List<VideoItem>> cb = Callback2.main(callback);
         service.getFavResources(mediaId, page, 20, "web").enqueue(new retrofit2.Callback<BiliRawResponse>() {
             @Override
             public void onResponse(Call<BiliRawResponse> call, Response<BiliRawResponse> response) {
                 BiliRawResponse body = response.body();
                 if (body == null || !body.isSuccess() || body.data == null) {
-                    callback.onError(body != null ? body.message : "empty response");
+                    cb.onError(body != null ? body.message : "empty response");
                     return;
                 }
                 List<VideoItem> items = new ArrayList<>();
@@ -162,23 +166,24 @@ public class VideoRepository {
                         items.add(item);
                     }
                 }
-                callback.onSuccess(items);
+                cb.onSuccess(items);
             }
 
             @Override
             public void onFailure(Call<BiliRawResponse> call, Throwable t) {
-                callback.onError(t.getMessage());
+                cb.onError(t.getMessage());
             }
         });
     }
 
     public void getVideoDetail(String bvid, final Callback2<VideoDetail> callback) {
+        final Callback2<VideoDetail> cb = Callback2.main(callback);
         service.getVideoDetail(bvid).enqueue(new retrofit2.Callback<BiliRawResponse>() {
             @Override
             public void onResponse(Call<BiliRawResponse> call, Response<BiliRawResponse> response) {
                 BiliRawResponse body = response.body();
                 if (body == null || !body.isSuccess() || body.data == null) {
-                    callback.onError(body != null ? body.message : "empty response");
+                    cb.onError(body != null ? body.message : "empty response");
                     return;
                 }
                 JsonObject o = body.data.getAsJsonObject();
@@ -211,23 +216,24 @@ public class VideoRepository {
                     stat.like = getLong(st, "like");
                     detail.stat = stat;
                 }
-                callback.onSuccess(detail);
+                cb.onSuccess(detail);
             }
 
             @Override
             public void onFailure(Call<BiliRawResponse> call, Throwable t) {
-                callback.onError(t.getMessage());
+                cb.onError(t.getMessage());
             }
         });
     }
 
     public void getComments(long oid, int page, final Callback2<List<Comment>> callback) {
+        final Callback2<List<Comment>> cb = Callback2.main(callback);
         service.getComments(1, oid, page).enqueue(new retrofit2.Callback<BiliRawResponse>() {
             @Override
             public void onResponse(Call<BiliRawResponse> call, Response<BiliRawResponse> response) {
                 BiliRawResponse body = response.body();
                 if (body == null || !body.isSuccess() || body.data == null) {
-                    callback.onError(body != null ? body.message : "empty response");
+                    cb.onError(body != null ? body.message : "empty response");
                     return;
                 }
                 List<Comment> comments = new ArrayList<>();
@@ -254,23 +260,24 @@ public class VideoRepository {
                         comments.add(c);
                     }
                 }
-                callback.onSuccess(comments);
+                cb.onSuccess(comments);
             }
 
             @Override
             public void onFailure(Call<BiliRawResponse> call, Throwable t) {
-                callback.onError(t.getMessage());
+                cb.onError(t.getMessage());
             }
         });
     }
 
     public void getPlayUrl(String bvid, long cid, int quality, final Callback2<PlayUrlResult> callback) {
+        final Callback2<PlayUrlResult> cb = Callback2.main(callback);
         service.getPlayUrl(bvid, cid, quality, 0, 0).enqueue(new retrofit2.Callback<BiliRawResponse>() {
             @Override
             public void onResponse(Call<BiliRawResponse> call, Response<BiliRawResponse> response) {
                 BiliRawResponse body = response.body();
                 if (body == null || !body.isSuccess() || body.data == null) {
-                    callback.onError(body != null ? body.message : "empty response");
+                    cb.onError(body != null ? body.message : "empty response");
                     return;
                 }
                 JsonObject o = body.data.getAsJsonObject();
@@ -299,12 +306,12 @@ public class VideoRepository {
                         result.durl.add(durl);
                     }
                 }
-                callback.onSuccess(result);
+                cb.onSuccess(result);
             }
 
             @Override
             public void onFailure(Call<BiliRawResponse> call, Throwable t) {
-                callback.onError(t.getMessage());
+                cb.onError(t.getMessage());
             }
         });
     }

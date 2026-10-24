@@ -55,15 +55,11 @@ public class SsdpDiscovery {
         try {
             socket = new DatagramSocket();
             socket.setSoTimeout(timeoutMs);
-            String message = "M-SEARCH * HTTP/1.1\r\n" +
-                    "HOST: " + MULTICAST_ADDRESS + ":" + MULTICAST_PORT + "\r\n" +
-                    "MAN: \"ssdp:discover\"\r\n" +
-                    "MX: 3\r\n" +
-                    "ST: " + SEARCH_TARGET + "\r\n\r\n";
-            byte[] buffer = message.getBytes();
             InetAddress address = InetAddress.getByName(MULTICAST_ADDRESS);
-            DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, MULTICAST_PORT);
-            socket.send(packet);
+            // Ask for MediaRenderers explicitly, and also do a generic sweep: a few TV
+            // firmwares only answer "ssdp:all" even though they advertise AVTransport.
+            sendMSearch(socket, address, SEARCH_TARGET);
+            sendMSearch(socket, address, "ssdp:all");
 
             long deadline = System.currentTimeMillis() + timeoutMs;
             byte[] recvBuffer = new byte[4096];
@@ -92,6 +88,16 @@ public class SsdpDiscovery {
             if (lock != null && lock.isHeld()) lock.release();
             listener.onFinished();
         }
+    }
+
+    private static void sendMSearch(DatagramSocket socket, InetAddress address, String searchTarget) throws IOException {
+        String message = "M-SEARCH * HTTP/1.1\r\n" +
+                "HOST: " + MULTICAST_ADDRESS + ":" + MULTICAST_PORT + "\r\n" +
+                "MAN: \"ssdp:discover\"\r\n" +
+                "MX: 3\r\n" +
+                "ST: " + searchTarget + "\r\n\r\n";
+        byte[] buffer = message.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        socket.send(new DatagramPacket(buffer, buffer.length, address, MULTICAST_PORT));
     }
 
     private static String extractHeader(String data, String header) {

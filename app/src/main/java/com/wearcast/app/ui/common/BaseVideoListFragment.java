@@ -24,6 +24,7 @@ public abstract class BaseVideoListFragment extends Fragment {
     protected VideoListAdapter adapter;
     private SwipeRefreshLayout swipeRefresh;
     private View emptyView;
+    private android.widget.TextView emptyText;
     private RecyclerView recyclerView;
 
     @Nullable
@@ -38,6 +39,7 @@ public abstract class BaseVideoListFragment extends Fragment {
         swipeRefresh = view.findViewById(R.id.swipe_refresh);
         recyclerView = view.findViewById(R.id.recycler_view);
         emptyView = view.findViewById(R.id.layout_empty);
+        emptyText = view.findViewById(R.id.text_empty);
 
         adapter = new VideoListAdapter(requireContext());
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -54,6 +56,7 @@ public abstract class BaseVideoListFragment extends Fragment {
                 if (!isAdded()) return;
                 swipeRefresh.setRefreshing(false);
                 adapter.setItems(result);
+                if (emptyText != null) emptyText.setText(R.string.empty_list);
                 emptyView.setVisibility(adapter.isEmpty() ? View.VISIBLE : View.GONE);
             }
 
@@ -61,6 +64,7 @@ public abstract class BaseVideoListFragment extends Fragment {
             public void onError(String message) {
                 if (!isAdded()) return;
                 swipeRefresh.setRefreshing(false);
+                if (emptyText != null) emptyText.setText(R.string.net_error);
                 emptyView.setVisibility(adapter.isEmpty() ? View.VISIBLE : View.GONE);
             }
         });
